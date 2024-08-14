@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Student_Registration</string>
+    <string-array name="Course">
+        <item>IT</item>
+        <item>Civil</item>
+        <item>Electrical</item>
+        <item>ECE</item>
+        <item>Architect</item>
+    </string-array>
+</resources>
