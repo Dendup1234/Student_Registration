@@ -82,23 +82,7 @@
             android:layout_marginTop="10dp"
             android:hint="Email Address"
             android:inputType="textEmailAddress"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Password"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="20dp"
-            />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/passwordEditText"
-            android:background="@drawable/rounded_edittext"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="10dp"
-            android:hint="Password"
-            android:inputType="textPassword"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
