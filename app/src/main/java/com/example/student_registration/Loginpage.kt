@@ -2,6 +2,9 @@ package com.example.student_registration
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -11,9 +14,9 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-
 
 
 class Loginpage : AppCompatActivity() {
@@ -38,6 +41,10 @@ class Loginpage : AppCompatActivity() {
         phoneEditText = findViewById(R.id.phoneEditText)
         radioGroup = findViewById(R.id.radioGroup)
 
+        // Toolbar for the menu
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
         // Find the Spinner by its ID
         val courseSpinner: Spinner = findViewById(R.id.course_spinner)
 
@@ -51,38 +58,11 @@ class Loginpage : AppCompatActivity() {
             val email = emailEditText.text.toString().trim()
             val phone = phoneEditText.text.toString().trim()
             val selectedRadioButtonId = radioGroup.checkedRadioButtonId
+            val selectedRadioButton = findViewById<RadioButton>(selectedRadioButtonId)
+            val gender = selectedRadioButton.text.toString()
             val selectedCourse = courseSpinner.selectedItem.toString()
-            when{
-                firstname.isEmpty() ->{
-                    Toast.makeText(this,"First Name is Required",Toast.LENGTH_SHORT).show()
-                }
-                email.isEmpty() -> {
-                    Toast.makeText(this, "Email is required", Toast.LENGTH_SHORT).show()
-                }
-                phone.isEmpty() -> {
-                    Toast.makeText(this, "Phone number is required", Toast.LENGTH_SHORT).show()
-                }
-                selectedRadioButtonId == -1 -> {
-                    Toast.makeText(this, "Please select your gender", Toast.LENGTH_SHORT).show()
-                }
-                else -> {
-                    val selectedRadioButton = findViewById<RadioButton>(selectedRadioButtonId)
-                    val gender = selectedRadioButton.text.toString()
-                    // If all fields are valid, proceed with the next action (e.g., submit the data)
-                   val intent = Intent(this, Validation::class.java).apply {
-                       putExtra("First_Name",firstname)
-                       putExtra("Last_Name",lastname)
-                       putExtra("Email",email)
-                       putExtra("Phone", phone)
-                       putExtra("Gender",gender)
-                       putExtra("Course",selectedCourse)
-                   }
-                    startActivity(intent)
 
-                    // Optionally, navigate to another activity or perform any further actions
-                }
-            }
-
+            showConfirmtionDialog(firstname,lastname,email,phone,gender,selectedCourse)
 
         }
         resetButton.setOnClickListener{
@@ -118,6 +98,29 @@ class Loginpage : AppCompatActivity() {
 
 
     }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        Log.d("MainActivity", "onCreateOptionsMenu called")
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.action_save -> {
+                Toast.makeText(this, "Save Progress clicked", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_help -> {
+                Toast.makeText(this, "Help clicked", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_settings -> {
+                Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
     private fun resetView(){
         firstNameEditText.text.clear()
         lastNameEditText.text.clear()
@@ -126,4 +129,44 @@ class Loginpage : AppCompatActivity() {
         radioGroup.clearCheck()
         findViewById<Spinner>(R.id.course_spinner).setSelection(0)
     }
+
+    private fun showConfirmtionDialog(
+        firstName: String,
+        lastName : String,
+        email : String,
+        phone : String,
+        gender : String,
+        course :String
+
+    ){
+        val message = """
+            First Name: $firstName
+            Last Name: $lastName
+            Email: $email
+            Phone: $phone
+            Gender: $gender
+            Course: $course
+        """.trimIndent()
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        builder.setTitle("Confirm Registration")
+        builder.setMessage(message)
+        builder.setPositiveButton("Confirm"){ dialog, which ->
+            val intent = Intent(this,Validation::class.java).apply{
+                putExtra("First_Name",firstName)
+                putExtra("Last_Name",lastName)
+                putExtra("Email",email)
+                putExtra("Phone", phone)
+                putExtra("Gender",gender)
+                putExtra("Course",course)
+            }
+            startActivity(intent)
+        }
+        builder.setNegativeButton("Cancel"){ dialog, which ->
+            dialog.dismiss()
+        }
+        builder.create().show()
+
+
+    }
+
 }
